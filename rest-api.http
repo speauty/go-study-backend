@@ -1,5 +1,5 @@
 ### List accounts
-GET http://{{host}}:{{port}}/accounts?page=1&page_size=15
+GET http://{{host}}:{{port}}/accounts?page=100&page_size=5
 
 
 ### Get account by id
