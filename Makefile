@@ -20,7 +20,7 @@ test:
 	go test -v -cover ./...
 
 mockStore:
-	mockgen -destination db/mock/store.go github.com/backend/db/sqlc Store
+	mockgen -package mockdb -destination db/mock/store.go github.com/backend/db/sqlc Store
 
 migrateup:
     migrate -path db/migration -database "postgresql://root:root@localhost:5433/backend?sslmode=disable" -verbose up
