@@ -1,0 +1,19 @@
+### List accounts
+GET http://{{host}}:{{port}}/accounts?page=1&page_size=15
+
+
+### Get account by id
+GET http://{{host}}:{{port}}/accounts/462
+
+
+### Create account
+POST http://{{host}}:{{port}}/accounts
+Content-Type: application/json
+
+{
+  "owner": "Tom",
+  "currency": "USD"
+}
+
+
+
