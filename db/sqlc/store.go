@@ -6,20 +6,25 @@ import (
 	"fmt"
 )
 
-type Store struct {
+type Store interface {
+	Querier
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+}
+
+type SQLStore struct {
 	*Queries
 	db *sql.DB
 }
 
-func NewStore(db *sql.DB) *Store {
-	return &Store{
-		db: db,
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
+		db:      db,
 		Queries: New(db),
 	}
 }
 
-func (store *Store) execTx(ctx context.Context, fn func(queries *Queries) error) error {
-	tx,err := store.db.BeginTx(ctx, nil)
+func (store *SQLStore) execTx(ctx context.Context, fn func(queries *Queries) error) error {
+	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
@@ -28,7 +33,7 @@ func (store *Store) execTx(ctx context.Context, fn func(queries *Queries) error)
 	err = fn(q)
 
 	if err != nil {
-		if rbErr := tx.Rollback();rbErr != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
 			return fmt.Errorf("tx err: %v, rb err: %v", err, rbErr)
 		}
 		return err
@@ -38,83 +43,82 @@ func (store *Store) execTx(ctx context.Context, fn func(queries *Queries) error)
 }
 
 type TransferTxParams struct {
-	 FromAccountId int64 `json:"from_account_id"`
-	 ToAccountId int64 `json:"to_account_id"`
-	 Amount int64 `json:"amount"`
+	FromAccountId int64 `json:"from_account_id"`
+	ToAccountId   int64 `json:"to_account_id"`
+	Amount        int64 `json:"amount"`
 }
 
 type TransferTxResult struct {
-	Transfer Transfer `json:"transfer"`
-	FromAccount Account `json:"from_account"`
-	ToAccount Account `json:"to_account"`
-	FromEntry Entry `json:"from_entry"`
-	ToEntry Entry `json:"to_entry"`
+	Transfer    Transfer `json:"transfer"`
+	FromAccount Account  `json:"from_account"`
+	ToAccount   Account  `json:"to_account"`
+	FromEntry   Entry    `json:"from_entry"`
+	ToEntry     Entry    `json:"to_entry"`
 }
 
-func (store *Store)TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
 
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID: arg.FromAccountId,
-			ToAccountID: arg.ToAccountId,
-			Amount: arg.Amount,
+			ToAccountID:   arg.ToAccountId,
+			Amount:        arg.Amount,
 		})
 		if err != nil {
 			return err
 		}
 
-		result.FromEntry,err = q.CreateEntry(ctx, CreateEntryParams{
+		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.FromAccountId,
-			Amount: -arg.Amount,
+			Amount:    -arg.Amount,
 		})
 		if err != nil {
 			return err
 		}
 
-		result.ToEntry,err = q.CreateEntry(ctx, CreateEntryParams{
+		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.ToAccountId,
-			Amount: arg.Amount,
+			Amount:    arg.Amount,
 		})
 		if err != nil {
 			return err
 		}
 
 		if arg.FromAccountId < arg.ToAccountId {
-			result.FromAccount,err = q.SetAccountDec(ctx, SetAccountDecParams{
-				ID: arg.FromAccountId,
+			result.FromAccount, err = q.SetAccountDec(ctx, SetAccountDecParams{
+				ID:      arg.FromAccountId,
 				Balance: arg.Amount,
 			})
 			if err != nil {
 				return err
 			}
 
-			result.ToAccount,err = q.SetAccountInc(ctx, SetAccountIncParams{
-				ID: arg.ToAccountId,
+			result.ToAccount, err = q.SetAccountInc(ctx, SetAccountIncParams{
+				ID:      arg.ToAccountId,
 				Balance: arg.Amount,
 			})
 			if err != nil {
 				return err
 			}
 		} else {
-			result.ToAccount,err = q.SetAccountInc(ctx, SetAccountIncParams{
-				ID: arg.ToAccountId,
+			result.ToAccount, err = q.SetAccountInc(ctx, SetAccountIncParams{
+				ID:      arg.ToAccountId,
 				Balance: arg.Amount,
 			})
 			if err != nil {
 				return err
 			}
 
-			result.FromAccount,err = q.SetAccountDec(ctx, SetAccountDecParams{
-				ID: arg.FromAccountId,
+			result.FromAccount, err = q.SetAccountDec(ctx, SetAccountDecParams{
+				ID:      arg.FromAccountId,
 				Balance: arg.Amount,
 			})
 			if err != nil {
 				return err
 			}
 		}
-
 
 		return nil
 	})

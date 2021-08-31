@@ -1,10 +1,10 @@
 package main
 
 import (
-	"backend/api"
-	db "backend/db/sqlc"
-	"backend/util"
 	"database/sql"
+	"github.com/backend/api"
+	db "github.com/backend/db/sqlc"
+	"github.com/backend/util"
 	"log"
 
 	_ "github.com/lib/pq"

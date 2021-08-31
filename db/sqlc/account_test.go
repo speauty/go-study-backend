@@ -1,9 +1,9 @@
 package db
 
 import (
-	"backend/util"
 	"context"
 	"database/sql"
+	"github.com/backend/util"
 	"testing"
 	"time"
 
@@ -12,8 +12,8 @@ import (
 
 func createTmpAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
-		Owner: util.RandomOwner(),
-		Balance: util.RandomMoney(),
+		Owner:    util.RandomOwner(),
+		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
 
@@ -36,7 +36,6 @@ func TestQueries_CreateAccount(t *testing.T) {
 	createTmpAccount(t)
 }
 
-
 func TestQueries_DeleteAccountById(t *testing.T) {
 	tmpAccount := createTmpAccount(t)
 	err := testQueries.DeleteAccountById(context.Background(), tmpAccount.ID)
@@ -51,7 +50,7 @@ func TestQueries_DeleteAccountById(t *testing.T) {
 func TestQueries_GetAccountById(t *testing.T) {
 	tmpAccount := createTmpAccount(t)
 
-	getAccount,err := testQueries.GetAccountById(context.Background(), tmpAccount.ID)
+	getAccount, err := testQueries.GetAccountById(context.Background(), tmpAccount.ID)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, getAccount)
@@ -69,11 +68,11 @@ func TestQueries_ListAccounts(t *testing.T) {
 	}
 
 	arg := ListAccountsParams{
-		Limit: 5,
+		Limit:  5,
 		Offset: 5,
 	}
 
-	accounts,err := testQueries.ListAccounts(context.Background(), arg)
+	accounts, err := testQueries.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, accounts, 5)
 
@@ -86,7 +85,7 @@ func TestQueries_SetAccountDec(t *testing.T) {
 	tmpAccount := createTmpAccount(t)
 	amount := int64(10)
 	arg := SetAccountDecParams{
-		ID: tmpAccount.ID,
+		ID:      tmpAccount.ID,
 		Balance: amount,
 	}
 
@@ -100,7 +99,7 @@ func TestQueries_SetAccountInc(t *testing.T) {
 	tmpAccount := createTmpAccount(t)
 	amount := int64(10)
 	arg := SetAccountIncParams{
-		ID: tmpAccount.ID,
+		ID:      tmpAccount.ID,
 		Balance: amount,
 	}
 
@@ -114,11 +113,11 @@ func TestQueries_UpdateAccountBalance(t *testing.T) {
 	tmpAccount := createTmpAccount(t)
 
 	arg := UpdateAccountBalanceParams{
-		ID: tmpAccount.ID,
+		ID:      tmpAccount.ID,
 		Balance: util.RandomMoney(),
 	}
 
-	updateAccount,err := testQueries.UpdateAccountBalance(context.Background(), arg)
+	updateAccount, err := testQueries.UpdateAccountBalance(context.Background(), arg)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, updateAccount)

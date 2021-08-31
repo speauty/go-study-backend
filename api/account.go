@@ -1,8 +1,8 @@
 package api
 
 import (
-	db "backend/db/sqlc"
 	"database/sql"
+	db "github.com/backend/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

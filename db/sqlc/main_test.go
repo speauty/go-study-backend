@@ -1,8 +1,8 @@
 package db
 
 import (
-	"backend/util"
 	"database/sql"
+	"github.com/backend/util"
 	"log"
 	"os"
 	"testing"

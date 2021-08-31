@@ -1,4 +1,4 @@
-module backend
+module github.com/backend
 
 go 1.16
 
