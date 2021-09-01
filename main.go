@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	api2 "github.com/speauty/backend/src/api"
-	db2 "github.com/speauty/backend/src/db/sqlc"
+	db "github.com/speauty/backend/src/db/sqlc"
 	util2 "github.com/speauty/backend/src/util"
 	"log"
 
@@ -20,7 +20,7 @@ func main() {
 		log.Fatal("连接数据库失败: ", err)
 	}
 
-	store := db2.NewStore(conn)
+	store := db.NewStore(conn)
 	server := api2.NewServer(store)
 
 	err = server.Start(config.ServerAddress)

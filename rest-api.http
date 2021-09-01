@@ -1,3 +1,14 @@
+### Create transfer
+POST http://{{host}}:{{port}}/transfers
+Content-Type: application/json
+
+{
+  "from_account_id": 1,
+  "to_account_id": 2,
+  "amount": 12,
+  "currency": "EUR"
+}
+
 ### List accounts
 GET http://{{host}}:{{port}}/accounts?page=100&page_size=5
 

@@ -3,13 +3,13 @@ package api
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	db2 "github.com/speauty/backend/src/db/sqlc"
+	db "github.com/speauty/backend/src/db/sqlc"
 	"net/http"
 )
 
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
+	Currency string `json:"currency" binding:"required,currency"`
 }
 
 func (server *Server) CreateAccount(ctx *gin.Context) {
@@ -19,7 +19,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	arg := db2.CreateAccountParams{
+	arg := db.CreateAccountParams{
 		Owner:    req.Owner,
 		Currency: req.Currency,
 		Balance:  0,
@@ -68,7 +68,7 @@ func (server *Server) ListAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	arg := db2.ListAccountsParams{
+	arg := db.ListAccountsParams{
 		Limit:  req.PageSize,
 		Offset: (req.Page - 1) * req.PageSize,
 	}
