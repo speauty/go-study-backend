@@ -15,8 +15,8 @@ func createTmpTransfer(t *testing.T) Transfer {
 
 	arg := CreateTransferParams{
 		FromAccountID: fromTmpAccount.ID,
-		ToAccountID: toTmpAccount.ID,
-		Amount: amount,
+		ToAccountID:   toTmpAccount.ID,
+		Amount:        amount,
 	}
 
 	transfer, err := testQueries.CreateTransfer(context.Background(), arg)
@@ -63,11 +63,11 @@ func TestQueries_ListTransfers(t *testing.T) {
 	}
 
 	arg := ListTransfersParams{
-		Limit: 5,
+		Limit:  5,
 		Offset: 5,
 	}
 
-	transfers,err := testQueries.ListTransfers(context.Background(), arg)
+	transfers, err := testQueries.ListTransfers(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, transfers, 5)
 

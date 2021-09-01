@@ -2,16 +2,16 @@ package main
 
 import (
 	"database/sql"
-	"github.com/backend/api"
-	db "github.com/backend/db/sqlc"
-	"github.com/backend/util"
+	api2 "github.com/speauty/backend/src/api"
+	db2 "github.com/speauty/backend/src/db/sqlc"
+	util2 "github.com/speauty/backend/src/util"
 	"log"
 
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	config, err := util.LoadConfig(".")
+	config, err := util2.LoadConfig(".")
 	if err != nil {
 		log.Fatal("载入配置失败: ", err)
 	}
@@ -20,8 +20,8 @@ func main() {
 		log.Fatal("连接数据库失败: ", err)
 	}
 
-	store := db.NewStore(conn)
-	server := api.NewServer(store)
+	store := db2.NewStore(conn)
+	server := api2.NewServer(store)
 
 	err = server.Start(config.ServerAddress)
 	if err != nil {

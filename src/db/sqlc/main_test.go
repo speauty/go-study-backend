@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"github.com/backend/util"
+	util2 "github.com/speauty/backend/src/util"
 	"log"
 	"os"
 	"testing"
@@ -14,7 +14,7 @@ var testQueries *Queries
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	config, err := util.LoadConfig("../..")
+	config, err := util2.LoadConfig("../../..")
 	if err != nil {
 		log.Fatal("载入配置失败: ", err)
 	}

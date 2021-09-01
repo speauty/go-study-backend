@@ -2,10 +2,10 @@ sqlc:
 	docker pull kjconroy/sqlc
 
 sqlcinit:
-	docker run --rm -v E:\MonkeyCode\go\src\github.com\backend:/src -w /src kjconroy/sqlc init
+	docker run --rm -v E:\MonkeyCode\github.com\speauty\backend:/src -w /src kjconroy/sqlc init
 
 sqlcgenerate:
-	docker run --rm -v E:\MonkeyCode\go\src\github.com\backend:/src -w /src kjconroy/sqlc generate
+	docker run --rm -v E:\MonkeyCode\github.com\speauty\backend:/src -w /src kjconroy/sqlc generate
 
 postgres:
 	docker run -d -p 5433:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root --name db_postgre_v13 postgres:13-alpine
@@ -20,7 +20,7 @@ test:
 	go test -v -cover ./...
 
 mockStore:
-	mockgen -package mockdb -destination db/mock/store.go github.com/backend/db/sqlc Store
+	mockgen -package mockdb -destination db/mock/store.go github.com/speauty/backend/src/db/sqlc Store
 
 migrateup:
     migrate -path db/migration -database "postgresql://root:root@localhost:5433/backend?sslmode=disable" -verbose up

@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"database/sql"
-	"github.com/backend/util"
+	util2 "github.com/speauty/backend/src/util"
 	"testing"
 	"time"
 
@@ -12,9 +12,9 @@ import (
 
 func createTmpAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
-		Owner:    util.RandomOwner(),
-		Balance:  util.RandomMoney(),
-		Currency: util.RandomCurrency(),
+		Owner:    util2.RandomOwner(),
+		Balance:  util2.RandomMoney(),
+		Currency: util2.RandomCurrency(),
 	}
 
 	account, err := testQueries.CreateAccount(context.Background(), arg)
@@ -114,7 +114,7 @@ func TestQueries_UpdateAccountBalance(t *testing.T) {
 
 	arg := UpdateAccountBalanceParams{
 		ID:      tmpAccount.ID,
-		Balance: util.RandomMoney(),
+		Balance: util2.RandomMoney(),
 	}
 
 	updateAccount, err := testQueries.UpdateAccountBalance(context.Background(), arg)

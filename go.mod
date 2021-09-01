@@ -1,4 +1,4 @@
-module github.com/backend
+module github.com/speauty/backend
 
 go 1.16
 

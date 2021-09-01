@@ -12,7 +12,7 @@ func createTmpEntry(t *testing.T) Entry {
 	tmpAccount := createTmpAccount(t)
 	arg := CreateEntryParams{
 		AccountID: tmpAccount.ID,
-		Amount: int64(10),
+		Amount:    int64(10),
 	}
 
 	entry, err := testQueries.CreateEntry(context.Background(), arg)
@@ -58,11 +58,11 @@ func TestQueries_ListEntries(t *testing.T) {
 	}
 
 	arg := ListEntriesParams{
-		Limit: 5,
+		Limit:  5,
 		Offset: 5,
 	}
 
-	entries,err := testQueries.ListEntries(context.Background(), arg)
+	entries, err := testQueries.ListEntries(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, entries, 5)
 

@@ -2,8 +2,8 @@ package api
 
 import (
 	"database/sql"
-	db "github.com/backend/db/sqlc"
 	"github.com/gin-gonic/gin"
+	db2 "github.com/speauty/backend/src/db/sqlc"
 	"net/http"
 )
 
@@ -19,7 +19,7 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	arg := db.CreateAccountParams{
+	arg := db2.CreateAccountParams{
 		Owner:    req.Owner,
 		Currency: req.Currency,
 		Balance:  0,
@@ -68,7 +68,7 @@ func (server *Server) ListAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	arg := db.ListAccountsParams{
+	arg := db2.ListAccountsParams{
 		Limit:  req.PageSize,
 		Offset: (req.Page - 1) * req.PageSize,
 	}

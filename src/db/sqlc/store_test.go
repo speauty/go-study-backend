@@ -26,8 +26,8 @@ func TestStore_TransferTx(t *testing.T) {
 				Amount:        amount,
 			})
 
-			errs <-err
-			results <-result
+			errs <- err
+			results <- result
 		}()
 	}
 
@@ -47,7 +47,7 @@ func TestStore_TransferTx(t *testing.T) {
 		require.NotZero(t, transfer.ID)
 		require.NotZero(t, transfer.CreateAt)
 
-		_,err = store.GetTransferById(context.Background(), transfer.ID)
+		_, err = store.GetTransferById(context.Background(), transfer.ID)
 		require.NoError(t, err)
 
 		fromEntry := result.FromEntry
@@ -57,7 +57,7 @@ func TestStore_TransferTx(t *testing.T) {
 		require.NotZero(t, fromEntry.ID)
 		require.NotZero(t, fromEntry.CreateAt)
 
-		_,err = store.GetEntryById(context.Background(), fromEntry.ID)
+		_, err = store.GetEntryById(context.Background(), fromEntry.ID)
 		require.NoError(t, err)
 
 		toEntry := result.ToEntry
@@ -67,7 +67,7 @@ func TestStore_TransferTx(t *testing.T) {
 		require.NotZero(t, toEntry.ID)
 		require.NotZero(t, toEntry.CreateAt)
 
-		_,err = store.GetEntryById(context.Background(), toEntry.ID)
+		_, err = store.GetEntryById(context.Background(), toEntry.ID)
 		require.NoError(t, err)
 
 		fromAccountResult := result.FromAccount
@@ -78,27 +78,26 @@ func TestStore_TransferTx(t *testing.T) {
 		require.NotEmpty(t, toAccountResult)
 		require.Equal(t, toAccountResult.ID, toAccount.ID)
 
-		diff1 := fromAccount.Balance-fromAccountResult.Balance
-		diff2 := toAccountResult.Balance-toAccount.Balance
+		diff1 := fromAccount.Balance - fromAccountResult.Balance
+		diff2 := toAccountResult.Balance - toAccount.Balance
 		require.Equal(t, diff1, diff2)
-		require.True(t, diff1>0)
-		require.True(t, diff1%amount==0)
+		require.True(t, diff1 > 0)
+		require.True(t, diff1%amount == 0)
 
-		k := int(diff1/amount)
+		k := int(diff1 / amount)
 		require.True(t, k >= 1 && k <= n)
 		require.NotContains(t, existed, k)
 		existed[k] = true
 	}
 
-	fromAccountUpdated,err := testQueries.GetAccountById(context.Background(), fromAccount.ID)
+	fromAccountUpdated, err := testQueries.GetAccountById(context.Background(), fromAccount.ID)
 	require.NoError(t, err)
 
-	toAccountUpdated,err := testQueries.GetAccountById(context.Background(), toAccount.ID)
+	toAccountUpdated, err := testQueries.GetAccountById(context.Background(), toAccount.ID)
 	require.NoError(t, err)
 
 	require.Equal(t, fromAccount.Balance-int64(n)*amount, fromAccountUpdated.Balance)
 	require.Equal(t, toAccount.Balance+int64(n)*amount, toAccountUpdated.Balance)
-
 
 }
 
@@ -127,7 +126,7 @@ func TestTransferTxDeadLock(t *testing.T) {
 				Amount:        amount,
 			})
 
-			errs <-err
+			errs <- err
 		}()
 	}
 
@@ -136,14 +135,13 @@ func TestTransferTxDeadLock(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	fromAccountUpdated,err := testQueries.GetAccountById(context.Background(), fromAccount.ID)
+	fromAccountUpdated, err := testQueries.GetAccountById(context.Background(), fromAccount.ID)
 	require.NoError(t, err)
 
-	toAccountUpdated,err := testQueries.GetAccountById(context.Background(), toAccount.ID)
+	toAccountUpdated, err := testQueries.GetAccountById(context.Background(), toAccount.ID)
 	require.NoError(t, err)
 
 	require.Equal(t, fromAccount.Balance, fromAccountUpdated.Balance)
 	require.Equal(t, toAccount.Balance, toAccountUpdated.Balance)
-
 
 }

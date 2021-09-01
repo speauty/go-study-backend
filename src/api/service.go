@@ -1,16 +1,16 @@
 package api
 
 import (
-	db "github.com/backend/db/sqlc"
 	"github.com/gin-gonic/gin"
+	db2 "github.com/speauty/backend/src/db/sqlc"
 )
 
 type Server struct {
-	store  db.Store
+	store  db2.Store
 	router *gin.Engine
 }
 
-func NewServer(store db.Store) *Server {
+func NewServer(store db2.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
 
