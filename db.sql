@@ -1,3 +1,15 @@
+create table "users" (
+    username varchar primary key,
+    hashed_password varchar not null,
+    full_name varchar not null,
+    email varchar unique not null,
+    password_changed_at  timestamptz not null default '0001-01-01 00:00:00+00Z',
+    "create_at" timestamptz not null default now()
+);
+
+alter table "users" add foreign key ("username") references accounts (owner);
+create unique index on "accounts" ("owner", "currency");
+
 create table "accounts" (
   "id" bigserial primary key,
   "owner" varchar not null,
