@@ -11,8 +11,9 @@ import (
 )
 
 func createTmpAccount(t *testing.T) Account {
+	user := createTmpUser(t)
 	arg := CreateAccountParams{
-		Owner:    util2.RandomOwner(),
+		Owner:    user.Username,
 		Balance:  util2.RandomMoney(),
 		Currency: util2.RandomCurrency(),
 	}

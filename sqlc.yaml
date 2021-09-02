@@ -1,9 +1,9 @@
 version: "1" # 版本号
 packages:
   - name: "db" # 包名
-    path: "./db/sqlc" # 生成文件的相对路径
-    queries: "./db/query/" # 查询文件的相对路径
-    schema: "./db/migration/"  # 建表迁移文件的相对路径
+    path: "./src/db/sqlc" # 生成文件的相对路径
+    queries: "./src/db/query/" # 查询文件的相对路径
+    schema: "./src/db/migration/"  # 建表迁移文件的相对路径
     engine: "postgresql" # 数据库类型
     emit_json_tags: true
     emit_prepared_queries: false

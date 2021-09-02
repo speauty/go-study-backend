@@ -1,3 +1,18 @@
+### Get user by usernmae
+GET http://{{host}}:{{port}}/users/Jerry
+
+
+### Create user
+POST http://{{host}}:{{port}}/users
+Content-Type: application/json
+
+{
+  "username": "Jerry",
+  "password": "123456",
+  "full_name": "Ki",
+  "email": "jerry@email.com"
+}
+
 ### Create transfer
 POST http://{{host}}:{{port}}/transfers
 Content-Type: application/json

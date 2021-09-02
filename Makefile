@@ -20,7 +20,7 @@ test:
 	go test -v -cover ./...
 
 mockStore:
-	mockgen -package mockdb -destination db/mock/store.go github.com/speauty/backend/src/db/sqlc Store
+	mockgen -package mockdb -destination src/db/mock/store.go github.com/speauty/backend/src/db/sqlc Store
 
 migratecreate:
 	migrate create -ext sql -dir src/db/migration -seq add_users
