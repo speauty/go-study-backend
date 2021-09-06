@@ -2,9 +2,11 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	db "github.com/speauty/backend/src/db/sqlc"
+	"github.com/speauty/backend/src/token"
 	"net/http"
 )
 
@@ -15,22 +17,22 @@ type transferRequest struct {
 	Currency      string `json:"currency" binding:"required,currency"`
 }
 
-func (server *Server) validAccount(ctx *gin.Context, accountId int64, currency string) bool {
+func (server *Server) validAccount(ctx *gin.Context, accountId int64, currency string) (db.Account, bool) {
 	account, err := server.store.GetAccountById(ctx, accountId)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return false
+			return account, false
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return false
+		return account, false
 	}
 	if account.Currency != currency {
 		err := fmt.Errorf("account [%d] currency mismatch: %s vs %s", account.ID, account.Currency, currency)
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return false
+		return account, false
 	}
-	return true
+	return account, true
 }
 
 func (server *Server) CreateTransfer(ctx *gin.Context) {
@@ -39,12 +41,18 @@ func (server *Server) CreateTransfer(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	if !server.validAccount(ctx, req.FromAccountId, req.Currency) {
+	fromAccount, valid := server.validAccount(ctx, req.FromAccountId, req.Currency)
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if fromAccount.Owner != authPayload.Username {
+		err := errors.New("from account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	if !server.validAccount(ctx, req.ToAccountId, req.Currency) {
+	if !valid {
+		return
+	}
+	_, valid = server.validAccount(ctx, req.ToAccountId, req.Currency)
+	if !valid {
 		return
 	}
 
