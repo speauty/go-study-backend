@@ -25,6 +25,9 @@ mockStore:
 migratecreate:
 	migrate create -ext sql -dir src/db/migration -seq add_users
 
+build:
+	docker build -t bankend:latest .
+
 migrateup:
     migrate -path src/db/migration -database "postgresql://root:root@localhost:5433/backend?sslmode=disable" -verbose up
 
